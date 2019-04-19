@@ -21,9 +21,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     if (mSettings->value("ExistingDataVisibility").isNull())
         mSettings->setValue("ExistingDataVisibility", false);
 
-    if(mSettings->value("LastWindowSize").isNull())
-        mSettings->setValue("LastWindowSize", QSize(800, 600));
-
     // Setup Ui
     ui->setupUi(this);
     ui->mainToolBar->setMovable(false);
@@ -77,10 +74,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     mEditorWidget->toggleSpriteTree(mShowSpriteTree->isChecked());
     connect(mShowSpriteTree, SIGNAL(toggled(bool)), this, SLOT(toggleSpriteTree(bool)));
 
-    this->resize(mSettings->value("LastWindowSize").value<QSize>());
-
     this->setWindowTitle("SpriteHelper");
     this->setWindowIcon(QIcon(basePath + "/data/icons/goomba.png"));
+
+    this->resize(1150, 760);
 }
 
 MainWindow::~MainWindow()
@@ -161,9 +158,4 @@ void MainWindow::toggleSpriteTree(bool toggle)
 {
     mEditorWidget->toggleSpriteTree(toggle);
     mSettings->setValue("SpriteTreeVisibility", toggle);
-}
-
-void MainWindow::resizeEvent(QResizeEvent* event)
-{
-   mSettings->setValue("LastWindowSize", event->size());
 }
