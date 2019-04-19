@@ -1,14 +1,11 @@
 #include "dataviewer.h"
 
 #include <QHBoxLayout>
-#include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QVariant>
 #include <QFile>
 #include <QHeaderView>
-
-#include <QtDebug>
 
 DataViewer::DataViewer(QWidget *parent) : QWidget(parent)
 {
@@ -33,7 +30,6 @@ DataViewer::DataViewer(QWidget *parent) : QWidget(parent)
 
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        // TODO : error if no json
         return;
     }
 
@@ -49,13 +45,8 @@ DataViewer::~DataViewer()
 void DataViewer::setSprite(int id)
 {
     // Clear the table
-
-    for (int i = mTable->rowCount(); i >= 0 ; i--)
-    {
-        delete mTable->itemAt(i, 0);
-        delete mTable->itemAt(i, 1);
-        mTable->removeRow(i);
-    }
+    mTable->clearContents();
+    mTable->setRowCount(0);
 
     // Get sprite
     QJsonObject sprite = mDoc.object().value(QString("Sprite %1").arg(id)).toObject();

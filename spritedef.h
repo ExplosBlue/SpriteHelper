@@ -48,7 +48,8 @@ public:
 
     void addField(Field* field) { fields.append(field); }
     void removeField(Field* field) { fields.removeOne(field); }
-
+    void moveFieldUp(Field* field) { fields.move(fields.indexOf(field), fields.indexOf(field)-1); }
+    void moveFieldDown(Field* field) { fields.move(fields.indexOf(field), fields.indexOf(field)+1); }
 private:
     QString name;
     int id;

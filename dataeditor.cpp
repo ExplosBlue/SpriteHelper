@@ -25,6 +25,8 @@ DataEditor::DataEditor(QWidget *parent) : QWidget(parent)
 
     mFieldContainer = new FieldContainer();
     connect(mFieldContainer, SIGNAL(removeFieldFromDef(Field*)), this, SLOT(handleRemoveField(Field*)));
+    connect(mFieldContainer, SIGNAL(moveFieldUp(Field*)), this, SLOT(handleMoveFieldUp(Field*)));
+    connect(mFieldContainer, SIGNAL(moveFieldDown(Field*)), this, SLOT(handleMoveFieldDown(Field*)));
 
     mFieldScrollArea = new QScrollArea();
     mFieldScrollArea->setWidgetResizable(true);
@@ -106,6 +108,16 @@ void DataEditor::handleAddField()
 
     DataField* dataField = new DataField(field);
     mFieldContainer->addField(dataField);
+}
+
+void DataEditor::handleMoveFieldUp(Field* field)
+{
+    mSpriteDefPtr->moveFieldUp(field);
+}
+
+void DataEditor::handleMoveFieldDown(Field* field)
+{
+    mSpriteDefPtr->moveFieldDown(field);
 }
 
 DataField::DataField(Field* field, QWidget* parent) : QWidget(parent)
@@ -196,6 +208,23 @@ DataField::DataField(Field* field, QWidget* parent) : QWidget(parent)
     connect(mDeleteButton, SIGNAL(pressed()), this, SLOT(handleDeletePressed()));
     fieldLayout->addWidget(mDeleteButton);
 
+    QVBoxLayout* moveButtonLayout = new QVBoxLayout();
+
+    mMoveUpButton = new QPushButton();
+    mMoveUpButton->setText("");
+    mMoveUpButton->setToolTip("Move Field Up");
+    mMoveUpButton->setIcon(QIcon(QCoreApplication::applicationDirPath() + "/data/icons/up.png"));
+    connect(mMoveUpButton, SIGNAL(pressed()), this, SLOT(handleMoveUpPressed()));
+    moveButtonLayout->addWidget(mMoveUpButton);
+
+    mMoveDownButton = new QPushButton();
+    mMoveDownButton->setText("");
+    mMoveDownButton->setToolTip("Move Field Down");
+    mMoveDownButton->setIcon(QIcon(QCoreApplication::applicationDirPath() + "/data/icons/down.png"));
+    connect(mMoveDownButton, SIGNAL(pressed()), this, SLOT(handleMoveDownPressed()));
+    moveButtonLayout->addWidget(mMoveDownButton);
+
+    fieldLayout->addLayout(moveButtonLayout);
     this->setLayout(fieldLayout);
 
     updateLayout();
@@ -275,6 +304,16 @@ void DataField::handleDeletePressed()
     emit deleteField(this);
 }
 
+void DataField::handleMoveUpPressed()
+{
+    emit moveUp(this);
+}
+
+void DataField::handleMoveDownPressed()
+{
+    emit moveDown(this);
+}
+
 void DataField::updateLayout()
 {
     switch (mFieldType->currentIndex())
@@ -335,6 +374,9 @@ void FieldContainer::addField(DataField *dataField)
     mFieldLayout->addWidget(dataField);
     mFieldLayout->setAlignment(dataField, Qt::AlignTop);
     connect(dataField, SIGNAL(deleteField(DataField*)), this, SLOT(handleDeleteField(DataField*)));
+    connect(dataField, SIGNAL(moveUp(DataField*)), this, SLOT(handleMoveFieldUp(DataField*)));
+    connect(dataField, SIGNAL(moveDown(DataField*)), this, SLOT(handleMoveFieldDown(DataField*)));
+
 }
 
 void FieldContainer::removeField(DataField *dataField)
@@ -348,4 +390,30 @@ void FieldContainer::handleDeleteField(DataField* dataField)
     removeField(dataField);
     emit removeFieldFromDef(dataField->getFieldPtr());
     delete dataField;
+}
+
+void FieldContainer::handleMoveFieldUp(DataField* dataField)
+{
+    const int index = mFieldLayout->indexOf(dataField);
+
+    if (index == 0)
+        return; // Can't move up
+
+    mFieldLayout->removeWidget(dataField);
+    mFieldLayout->insertWidget(index - 1, dataField);
+    mFieldLayout->setAlignment(dataField, Qt::AlignTop);
+    emit moveFieldUp(dataField->getFieldPtr());
+}
+
+void FieldContainer::handleMoveFieldDown(DataField* dataField)
+{
+    const int index = mFieldLayout->indexOf(dataField);
+
+    if (index == mFieldLayout->count()-1)
+        return; // Can't move down
+
+    mFieldLayout->removeWidget(dataField);
+    mFieldLayout->insertWidget(index + 1, dataField);
+    mFieldLayout->setAlignment(dataField, Qt::AlignTop);
+    emit moveFieldDown(dataField->getFieldPtr());
 }

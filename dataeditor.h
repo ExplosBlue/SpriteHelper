@@ -26,6 +26,9 @@ public:
 signals:
     void deleteField(DataField*);
 
+    void moveUp(DataField*);
+    void moveDown(DataField*);
+
 private slots:
     void handleNameChange(QString);
     void handleNybbleChange(QString);
@@ -37,6 +40,8 @@ private slots:
     void handleMaskChange(int);
     void handleBitnumChange(int);
     void handleStartbitChange(int);
+    void handleMoveUpPressed();
+    void handleMoveDownPressed();
 
 private:
 
@@ -52,6 +57,9 @@ private:
     QLineEdit* mFieldValue;
     QLineEdit* mFieldComment;
     QPushButton* mDeleteButton;
+
+    QPushButton* mMoveUpButton;
+    QPushButton* mMoveDownButton;
 
     Field* mFieldPtr;
 };
@@ -71,9 +79,13 @@ public:
 
 signals:
     void removeFieldFromDef(Field*);
+    void moveFieldUp(Field*);
+    void moveFieldDown(Field*);
 
 private slots:
     void handleDeleteField(DataField* dataField);
+    void handleMoveFieldUp(DataField* dataField);
+    void handleMoveFieldDown(DataField* dataField);
 
 private:
     QVBoxLayout* mFieldLayout;
@@ -97,6 +109,8 @@ private slots:
     void handleNameChanged(QString);
     void handleNotesChanged();
     void handleRemoveField(Field*);
+    void handleMoveFieldUp(Field*);
+    void handleMoveFieldDown(Field*);
     void handleAddField();
 
 private:
