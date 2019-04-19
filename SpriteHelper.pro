@@ -4,11 +4,11 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = Sprite-Helper
+TARGET = SpriteHelper
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -26,10 +26,20 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    spritetree.cpp \
+    editorwidget.cpp \
+    spritedef.cpp \
+    dataeditor.cpp \
+    dataviewer.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    spritetree.h \
+    editorwidget.h \
+    spritedef.h \
+    dataeditor.h \
+    dataviewer.h
 
 FORMS += \
         mainwindow.ui

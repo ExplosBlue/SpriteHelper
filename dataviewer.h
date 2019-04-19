@@ -3,16 +3,23 @@
 
 #include <QObject>
 #include <QWidget>
+#include <QTableWidget>
 
-class dataviewer : public QObject
+#include <QJsonDocument>
+
+class DataViewer : public QWidget
 {
     Q_OBJECT
 public:
-    explicit dataviewer(QObject *parent = nullptr);
+    explicit DataViewer(QWidget *parent = nullptr);
+    ~DataViewer();
 
-signals:
+    void setSprite(int id);
 
-public slots:
+private:
+    QJsonDocument mDoc;
+
+    QTableWidget* mTable;
 };
 
 #endif // DATAVIEWER_H
